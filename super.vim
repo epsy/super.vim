@@ -51,15 +51,20 @@ def fn_get_name_args(b, row):
 def fn_get_arg_names(b, row, col):
     parens = 0
     arg = ''
+    stars = ''
     for line in b[row:]:
         for c in line[col:]:
             if c.isalnum() or c == '_':
                 if not parens:
                     arg += c
+            elif c == '*':
+                if not parens:
+                    stars += c
             else:
                 if arg:
-                    yield arg
+                    yield stars + arg
                     arg = ''
+                    stars = ''
                 if c in '{[(':
                     parens += 1
                 elif c in '}])':
@@ -78,6 +83,7 @@ def build_super(buf, row):
     args = list(args)
     return 'super({0}, {1}).{2}({3})'.format(
         cls_name, args[0], fn_name, ', '.join(args[1:]))
+
 
 def _InsertSuper():
     return build_super(vim.current.buffer, vim.current.window.cursor[0] - 1)
