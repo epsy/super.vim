@@ -79,16 +79,10 @@ def build_super(buf, row):
     return 'super({0}, {1}).{2}({3})'.format(
         cls_name, args[0], fn_name, ', '.join(args[1:]))
 
-def insert(w, buf, sup):
-    print(sup)
-
+def _InsertSuper():
+    return build_super(vim.current.buffer, vim.current.window.cursor[0] - 1)
 EOF
 
 function! InsertSuper()
-python << EOF
-w = vim.current.window
-b = vim.current.buffer
-row = w.cursor[0] - 1
-EOF
-return pyeval('build_super(b, row)')
+return pyeval('_InsertSuper()')
 endfunction
